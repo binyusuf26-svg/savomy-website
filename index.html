@@ -641,61 +641,141 @@
     </footer>
 
     <script>
-        // ADMIN LOGIN REDIRECT
+        // 1. ADMIN LOGIN REDIRECT
         if (window.netlifyIdentity) {
             window.netlifyIdentity.on("init", user => {
                 if (!user) window.netlifyIdentity.on("login", () => document.location.href = "/admin/");
             });
         }
 
-        // FILTER LOGIC
-        const filterPills = document.querySelectorAll('.filter-pill');
-        const bookCards = document.querySelectorAll('.book-card');
-        filterPills.forEach(pill => {
-            pill.addEventListener('click', function() {
-                const category = this.getAttribute('data-category');
-                filterPills.forEach(p => p.classList.remove('active'));
-                this.classList.add('active');
+        // 2. THE BRIDGE: FETCH DATA FROM ADMIN PANEL
+        async function loadCMSData() {
+            try {
+                // Fetch Books
+                const bookRes = await fetch('books.json');
+                if (bookRes.ok) {
+                    const bookData = await bookRes.json();
+                    renderBooks(bookData.books_list || []);
+                }
                 
-                bookCards.forEach(card => {
-                    if (category === 'all' || card.getAttribute('data-category') === category) {
-                        card.classList.remove('hidden');
-                    } else {
-                        card.classList.add('hidden');
-                    }
+                // Fetch Reviews
+                const revRes = await fetch('reviews.json');
+                if (revRes.ok) {
+                    const revData = await revRes.json();
+                    renderReviews(revData.reviews_list || []);
+                }
+            } catch (error) {
+                console.log("Waiting for your first published items...");
+            }
+            
+            // Attach interactions AFTER the books are drawn on the screen
+            attachInteractions();
+        }
+
+        // 3. DRAW THE BOOKS
+        function renderBooks(books) {
+            const container = document.querySelector('.carousel-container');
+            container.innerHTML = ''; // Clear out the empty space
+            
+            books.forEach(book => {
+                const article = document.createElement('article');
+                article.className = 'book-card';
+                // Convert category to lowercase for the filter to work
+                article.setAttribute('data-category', book.category.toLowerCase());
+                article.setAttribute('data-title', book.title);
+                article.setAttribute('data-desc', book.description);
+                article.setAttribute('data-sample', book.sample_url);
+                article.setAttribute('data-amazon', book.amazon_url);
+                article.setAttribute('data-gumroad', book.gumroad_url || '');
+
+                article.innerHTML = `
+                    <div class="book-cover-wrapper">
+                        <span class="category-badge">${book.category}</span>
+                        <img src="${book.cover}" alt="${book.title} Cover">
+                    </div>
+                    <h3 class="book-card-title">${book.title}</h3>
+                `;
+                container.appendChild(article);
+            });
+        }
+
+        // 4. DRAW THE REVIEWS
+        function renderReviews(reviews) {
+            const container = document.querySelector('.reviews-grid');
+            container.innerHTML = ''; 
+            
+            reviews.forEach(review => {
+                // Generate the correct number of stars
+                const stars = '★'.repeat(review.stars) + '☆'.repeat(5 - review.stars);
+                
+                const card = document.createElement('div');
+                card.className = 'review-card';
+                card.innerHTML = `
+                    <img src="${review.image}" alt="${review.name}" class="review-img">
+                    <div class="review-stars">${stars}</div>
+                    <p class="review-text">"${review.text}"</p>
+                    <p class="review-name">${review.name}</p>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        // 5. ATTACH FILTERS & DIALOG POPUPS
+        function attachInteractions() {
+            // Filters
+            const filterPills = document.querySelectorAll('.filter-pill');
+            const bookCards = document.querySelectorAll('.book-card');
+            
+            filterPills.forEach(pill => {
+                pill.addEventListener('click', function() {
+                    const category = this.getAttribute('data-category');
+                    filterPills.forEach(p => p.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    bookCards.forEach(card => {
+                        if (category === 'all' || card.getAttribute('data-category') === category) {
+                            card.classList.remove('hidden');
+                        } else {
+                            card.classList.add('hidden');
+                        }
+                    });
                 });
             });
-        });
 
-        // MATERIAL DIALOG (Bottom Sheet) LOGIC
-        const dialog = document.getElementById('bookDialog');
-        const closeBtn = document.getElementById('closeDialog');
-        
-        bookCards.forEach(card => {
-            card.addEventListener('click', function() {
-                document.getElementById('d-title').textContent = this.getAttribute('data-title');
-                document.getElementById('d-desc').textContent = this.getAttribute('data-desc');
-                
-                document.getElementById('d-sample').href = this.getAttribute('data-sample');
-                document.getElementById('d-amazon').href = this.getAttribute('data-amazon');
-                
-                const gumroadLink = this.getAttribute('data-gumroad');
-                const gumroadBtn = document.getElementById('d-gumroad');
-                if(gumroadLink && gumroadLink !== "null" && gumroadLink !== "") {
-                    gumroadBtn.style.display = "block";
-                    gumroadBtn.href = gumroadLink;
-                } else {
-                    gumroadBtn.style.display = "none";
-                }
+            // Material Dialog (Bottom Sheet)
+            const dialog = document.getElementById('bookDialog');
+            const closeBtn = document.getElementById('closeDialog');
+            
+            bookCards.forEach(card => {
+                card.addEventListener('click', function() {
+                    document.getElementById('d-title').textContent = this.getAttribute('data-title');
+                    document.getElementById('d-desc').textContent = this.getAttribute('data-desc');
+                    document.getElementById('d-sample').href = this.getAttribute('data-sample');
+                    document.getElementById('d-amazon').href = this.getAttribute('data-amazon');
+                    
+                    const gumroadLink = this.getAttribute('data-gumroad');
+                    const gumroadBtn = document.getElementById('d-gumroad');
+                    
+                    if(gumroadLink && gumroadLink !== "null" && gumroadLink !== "") {
+                        gumroadBtn.style.display = "block";
+                        gumroadBtn.href = gumroadLink;
+                    } else {
+                        gumroadBtn.style.display = "none";
+                    }
 
-                dialog.classList.add('active');
+                    dialog.classList.add('active');
+                });
             });
-        });
 
-        closeBtn.addEventListener('click', () => dialog.classList.remove('active'));
-        dialog.addEventListener('click', (e) => {
-            if (e.target === dialog) dialog.classList.remove('active');
-        });
-    </script>
+            // Close actions
+            closeBtn.addEventListener('click', () => dialog.classList.remove('active'));
+            dialog.addEventListener('click', (e) => {
+                if (e.target === dialog) dialog.classList.remove('active');
+            });
+        }
+
+        // Start the engine!
+        loadCMSData();
+                        </script>
 </body>
 </html>
