@@ -302,7 +302,14 @@
             background: #E0E4E8;
             color: var(--text-primary);
         }
-
+/* Add this new styling for the text */
+        .brand-name {
+            font-size: 22px;
+            font-weight: 900;
+            color: var(--text-primary);
+            margin-left: 10px; /* Adds space between logo and text */
+            letter-spacing: -0.5px;
+        }
         .dialog-desc {
             font-size: 15px;
             color: var(--text-secondary);
@@ -567,11 +574,14 @@
 </head>
 <body>
 
+
     <header>
         <div class="header-brand">
             <img src="images/logo.png" alt="Colorynth Logo">
+            <span class="brand-name">Colorynth</span>
         </div>
     </header>
+
 
     <section class="hero-banner">
         <div class="hero-overlay"></div>
@@ -622,7 +632,7 @@
     </div>
 
     <section class="lead-magnet">
-        <h2>Get 5 FREE Coloring Pages!</h2>
+        <h2>Get 10 FREE Coloring Pages!</h2>
         <p>Enter your email below. We will instantly redirect you to your free Google Drive download!</p>
         
         <form class="lead-magnet-form" name="FreebieDownloads" method="POST" data-netlify="true" action="https://drive.google.com/file/d/1iI16DPxRpQe1x4htzXLiiDLb4Bi1IaXr/view?usp=drivesdk">
