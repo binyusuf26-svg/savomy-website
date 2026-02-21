@@ -1,57 +1,701 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" dir="ltr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="COLORYNTH - Your one-stop solution for vibrant colors and designs.">
-    <title>COLORYNTH</title>
+    <meta name="description" content="Shop Colorynth's premium collection of engaging, easy-to-color children's books. Available in physical copies on Amazon and instant digital PDF downloads. Boost your child's creativity today!">
+    <meta name="keywords" content="coloring books, children's books, educational, creativity, Colorynth">
+    <title>COLORYNTH - Children's Coloring Books | Ignite Creativity</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+    
     <style>
-        body {
-            background-color: #1C1C1C; /* Dark Ash */
-            color: #FFFFFF; /* White */
+        /* --- MATERIAL DESIGN 3 VARIABLES - DARK ASH & WHITE THEME --- */
+        :root {
+            --primary: #2C3539;
+            --primary-light: #3E4A4F;
+            --primary-dark: #1A1F23;
+            --secondary: #5B7C99;
+            --secondary-dark: #4A6280;
+            --accent: #8B9D6F;
+            --surface: #FFFFFF;
+            --surface-variant: #F5F7F8;
+            --background: #F5F7F8;
+            --text-primary: #2C3539;
+            --text-secondary: #6B7280;
+            --elevation-1: 0 2px 4px rgba(44, 53, 57, 0.08);
+            --elevation-2: 0 4px 8px rgba(44, 53, 57, 0.12);
+            --elevation-3: 0 8px 16px rgba(44, 53, 57, 0.15);
+            --radius-card: 16px;
+            --radius-dialog: 24px;
+            --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
         }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body { font-family: 'Nunito', sans-serif; background: var(--background); color: var(--text-primary); }
+        img { max-width: 100%; display: block; }
+
+        /* --- HEADER --- */
         header {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: rgba(255, 255, 255, 0.98);
+            padding: 16px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: var(--elevation-1);
+            backdrop-filter: blur(8px);
+        }
+
+        .header-brand {
             display: flex;
             align-items: center;
-            justify-content: space-between;
-            padding: 10px;
-            background-color: #333;
         }
-        img.logo {
-            max-width: 150px;
+
+        .header-brand img {
+            height: 40px;
+            width: auto;
         }
-        .hero {
-            background-image: url('./images/hero-banner.jpg'); /* Local image path */
-            height: 400px;
-            background-size: cover;
+
+        /* --- BIG BOOK HERO BANNER --- */
+        .hero-banner {
+            position: relative;
+            background: url('images/banner.png') center/cover no-repeat;
+            background-color: var(--primary);
+            min-height: 500px;
             display: flex;
             align-items: center;
             justify-content: center;
-            color: white;
             text-align: center;
         }
-        .carousel, .reviews {
-            margin: 20px;
+
+        .hero-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(44, 53, 57, 0.88) 0%, rgba(91, 124, 153, 0.88) 100%);
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 1;
+            color: white;
+            padding: 24px;
+            max-width: 900px;
+        }
+
+        .hero-content h2 {
+            font-size: clamp(36px, 8vw, 56px);
+            font-weight: 900;
+            margin-bottom: 16px;
+            line-height: 1.1;
+            letter-spacing: -0.5px;
+        }
+
+        .hero-content p {
+            font-size: clamp(16px, 4vw, 20px);
+            opacity: 0.98;
+            font-weight: 600;
+            line-height: 1.6;
+        }
+
+        /* --- FILTERS (5 Categories) --- */
+        .library-section {
+            padding: 80px 24px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .library-title {
+            font-size: 32px;
+            font-weight: 900;
+            margin-bottom: 48px;
+            text-align: center;
+            color: var(--text-primary);
+        }
+
+        .filter-container {
+            display: flex;
+            gap: 12px;
+            overflow-x: auto;
+            margin-bottom: 40px;
+            padding: 8px 0;
+            scroll-snap-type: x mandatory;
+            scrollbar-width: none;
+        }
+
+        .filter-container::-webkit-scrollbar {
+            display: none;
+        }
+
+        .filter-pill {
+            padding: 12px 28px;
+            border: 2px solid #E0E4E8;
+            background: var(--surface);
+            border-radius: 50px;
+            cursor: pointer;
+            font-size: 15px;
+            font-weight: 700;
+            white-space: nowrap;
+            scroll-snap-align: start;
+            transition: var(--transition);
+            color: var(--text-secondary);
+        }
+
+        .filter-pill:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+
+        .filter-pill.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+            box-shadow: var(--elevation-2);
+        }
+
+        /* --- GOOGLE PLAY STYLE CAROUSEL --- */
+        .carousel-container {
+            display: flex;
+            gap: 20px;
+            overflow-x: auto;
+            scroll-snap-type: x mandatory;
+            padding: 10px 0;
+            margin: 0;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .carousel-container::-webkit-scrollbar {
+            height: 6px;
+        }
+
+        .carousel-container::-webkit-scrollbar-thumb {
+            background: #D0D4D8;
+            border-radius: 10px;
+        }
+
+        .book-card {
+            flex: 0 0 auto;
+            width: 220px;
+            scroll-snap-align: center;
+            cursor: pointer;
+        }
+
+        .book-cover-wrapper {
+            background: var(--surface);
+            border-radius: var(--radius-card);
+            padding: 8px;
+            box-shadow: var(--elevation-1);
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .book-cover-wrapper:hover {
+            transform: translateY(-8px);
+            box-shadow: var(--elevation-3);
+        }
+
+        .book-cover-wrapper img {
+            width: 100%;
+            border-radius: 12px;
+            object-fit: cover;
+            aspect-ratio: 3/4;
+        }
+
+        .book-card-title {
+            font-size: 16px;
+            font-weight: 800;
+            margin-top: 12px;
+            text-align: center;
+            color: var(--text-primary);
+        }
+
+        .category-badge {
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            background: var(--secondary);
+            color: white;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* --- MATERIAL DIALOG (Bottom Sheet Popup) --- */
+        .dialog-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.6);
+            z-index: 1000;
+            justify-content: center;
+            align-items: flex-end;
+            backdrop-filter: blur(4px);
+        }
+
+        .dialog-overlay.active {
+            display: flex;
+            animation: fadeIn 0.3s forwards;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .dialog-content {
+            background: var(--surface);
+            width: 100%;
+            max-width: 500px;
+            border-radius: var(--radius-dialog) var(--radius-dialog) 0 0;
+            padding: 32px 24px;
+            box-shadow: var(--elevation-3);
+            transform: translateY(100%);
+            transition: transform 0.3s ease-out;
+        }
+
+        .dialog-overlay.active .dialog-content {
+            transform: translateY(0);
+        }
+
+        .dialog-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 20px;
+        }
+
+        .dialog-title {
+            font-size: 24px;
+            font-weight: 800;
+            line-height: 1.2;
+            color: var(--text-primary);
+        }
+
+        .dialog-close {
+            background: var(--surface-variant);
+            border: none;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 18px;
+            font-weight: bold;
+            color: var(--text-secondary);
+            transition: var(--transition);
+        }
+
+        .dialog-close:hover {
+            background: #E0E4E8;
+            color: var(--text-primary);
+        }
+
+        .dialog-desc {
+            font-size: 15px;
+            color: var(--text-secondary);
+            margin-bottom: 28px;
+            line-height: 1.6;
+        }
+
+        .dialog-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 14px;
+            border-radius: 12px;
+            font-size: 15px;
+            font-weight: 800;
+            text-align: center;
+            text-decoration: none;
+            display: block;
+            transition: var(--transition);
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn-sample {
+            border: 2px solid var(--primary);
+            color: var(--primary);
+            background: transparent;
+        }
+
+        .btn-sample:hover {
+            background: var(--surface-variant);
+        }
+
+        .btn-amazon {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-amazon:hover {
+            background: var(--primary-dark);
+        }
+
+        .btn-gumroad {
+            background: var(--secondary);
+            color: white;
+        }
+
+        .btn-gumroad:hover {
+            background: var(--secondary-dark);
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--elevation-2);
+        }
+
+        /* --- CUSTOMER REVIEWS SECTION --- */
+        .reviews-section {
+            background: var(--surface-variant);
+            padding: 80px 24px;
+        }
+
+        .reviews-grid {
+            display: flex;
+            gap: 24px;
+            overflow-x: auto;
+            scroll-snap-type: x mandatory;
+            padding: 10px 0;
+            -webkit-overflow-scrolling: touch;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .reviews-grid::-webkit-scrollbar {
+            display: none;
+        }
+
+        .review-card {
+            flex: 0 0 auto;
+            width: 300px;
+            background: var(--surface);
+            border-radius: var(--radius-card);
+            padding: 32px 24px;
+            box-shadow: var(--elevation-1);
+            scroll-snap-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            transition: var(--transition);
+        }
+
+        .review-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--elevation-2);
+        }
+
+        .review-img {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-bottom: 20px;
+            border: 3px solid var(--primary-light);
+        }
+
+        .review-stars {
+            color: #FFD700;
+            font-size: 22px;
+            margin-bottom: 16px;
+            letter-spacing: 2px;
+        }
+
+        .review-text {
+            font-size: 14px;
+            font-style: italic;
+            color: var(--text-secondary);
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+
+        .review-name {
+            font-size: 16px;
+            font-weight: 800;
+            color: var(--text-primary);
+        }
+
+        /* --- NETLIFY LEAD MAGNET FORM --- */
+        .lead-magnet {
+            background: linear-gradient(135deg, var(--secondary) 0%, var(--secondary-dark) 100%);
+            color: white;
+            padding: 80px 24px;
+            text-align: center;
+        }
+
+        .lead-magnet h2 {
+            font-size: 32px;
+            font-weight: 900;
+            margin-bottom: 16px;
+        }
+
+        .lead-magnet > p {
+            font-size: 18px;
+            opacity: 0.95;
+            margin-bottom: 24px;
+        }
+
+        .lead-magnet-form {
+            max-width: 500px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .lead-magnet-form input {
+            padding: 16px;
+            border-radius: 12px;
+            border: none;
+            font-size: 16px;
+            outline: none;
+            font-family: 'Nunito', sans-serif;
+        }
+
+        .btn-magnet {
+            background: var(--primary);
+            color: white;
+            padding: 16px;
+            border-radius: 12px;
+            font-weight: 800;
+            font-size: 16px;
+            border: none;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .btn-magnet:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: var(--elevation-2);
+        }
+
+        /* --- FOOTER & CONTACT INFO --- */
+        footer {
+            background: var(--primary);
+            color: white;
+            padding: 60px 24px 40px;
+            text-align: center;
+        }
+
+        .contact-info {
+            margin-bottom: 32px;
+            padding-bottom: 32px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .contact-info p {
+            font-size: 16px;
+            margin-bottom: 12px;
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .contact-info strong {
+            font-weight: 800;
+        }
+
+        .contact-info a {
+            color: var(--accent);
+            text-decoration: none;
+            font-weight: 700;
+            transition: var(--transition);
+        }
+
+        .contact-info a:hover {
+            opacity: 0.8;
+            text-decoration: underline;
+        }
+
+        footer p {
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        @media (min-width: 600px) {
+            .lead-magnet-form {
+                flex-direction: row;
+            }
+
+            .lead-magnet-form input {
+                flex: 1;
+            }
+
+            .dialog-overlay {
+                align-items: center;
+            }
+
+            .dialog-content {
+                border-radius: var(--radius-dialog);
+                max-height: 90vh;
+                overflow-y: auto;
+            }
+
+            .reviews-grid {
+                justify-content: center;
+                flex-wrap: wrap;
+                overflow-x: visible;
+            }
+
+            .review-card {
+                width: 320px;
+            }
+        }
+
+        .hidden {
+            display: none !important;
         }
     </style>
 </head>
 <body>
+
     <header>
-        <img src="./images/logo.png" alt="COLORYNTH Logo" class="logo"> <!-- Logo Image Tag -->
+        <div class="header-brand">
+            <img src="images/logo.png" alt="Colorynth Logo">
+        </div>
     </header>
-    <section class="hero">
-        <h1>Welcome to COLORYNTH</h1>
+
+    <section class="hero-banner">
+        <div class="hero-overlay"></div>
+        <div class="hero-content">
+            <h2>Ignite Creativity with Colorynth Coloring Books</h2>
+            <p>Bold, adorable, and easy-to-color books designed to build confidence in little artists. Fuel your child's imagination with engaging designs that inspire creativity and learning.</p>
+        </div>
     </section>
-    <div class="carousel">
-        <!-- Empty carousel container for CMS -->
+
+    <section class="library-section">
+        <h2 class="library-title">Explore Our Collection</h2>
+
+        <div class="filter-container">
+            <button class="filter-pill active" data-category="all">All</button>
+            <button class="filter-pill" data-category="animals">🦁 Animals</button>
+            <button class="filter-pill" data-category="food">🍕 Food</button>
+            <button class="filter-pill" data-category="space">🚀 Space</button>
+            <button class="filter-pill" data-category="vehicles">🚗 Vehicles</button>
+            <button class="filter-pill" data-category="monsters">👹 Monsters</button>
+        </div>
+
+        <div class="carousel-container">
+            <!-- CMS will inject book cards here -->
+        </div>
+    </section>
+
+    <section class="reviews-section">
+        <h2 class="library-title">What Parents Are Saying</h2>
+        <div class="reviews-grid">
+            <!-- CMS will inject review cards here -->
+        </div>
+    </section>
+
+    <div class="dialog-overlay" id="bookDialog">
+        <div class="dialog-content">
+            <div class="dialog-header">
+                <h3 class="dialog-title" id="d-title">Book Title</h3>
+                <button class="dialog-close" id="closeDialog">✕</button>
+            </div>
+            <p class="dialog-desc" id="d-desc">Book Description goes here...</p>
+            
+            <div class="dialog-actions">
+                <a href="#" target="_blank" id="d-sample" class="btn btn-sample">📖 Read Sample on Amazon</a>
+                <a href="#" target="_blank" id="d-amazon" class="btn btn-amazon">🛒 Buy Physical on Amazon</a>
+                <a href="#" target="_blank" id="d-gumroad" class="btn btn-gumroad">📥 Buy Digital PDF</a>
+            </div>
+        </div>
     </div>
-    <div class="reviews">
-        <!-- Empty reviews grid for CMS -->
-    </div>
+
+    <section class="lead-magnet">
+        <h2>Get 5 FREE Coloring Pages!</h2>
+        <p>Enter your email below. We will instantly redirect you to your free Google Drive download!</p>
+        
+        <form class="lead-magnet-form" name="FreebieDownloads" method="POST" data-netlify="true" action="https://drive.google.com/file/d/1iI16DPxRpQe1x4htzXLiiDLb4Bi1IaXr/view?usp=drivesdk">
+            <input type="email" name="email" placeholder="Enter your email address" required>
+            <button type="submit" class="btn-magnet">Download Now →</button>
+        </form>
+    </section>
+
     <footer>
-        <a href="https://drive.google.com/link-to-your-lead-magnet" target="_blank">Download your free resource!</a> <!-- Google Drive lead magnet link -->
+        <div class="contact-info">
+            <p><strong>Got questions? Reach out to us!</strong></p>
+            <p>Email: <a href="mailto:zalhamist@gmail.com">zalhamist@gmail.com</a></p>
+            <p>Phone / WhatsApp: <a href="tel:+2349065605826">+2349065605826</a></p>
+        </div>
+        <p>&copy; 2026 COLORYNTH Coloring Books. All rights reserved.</p>
     </footer>
 
-    <script src="scripts/main.js"></script> <!-- Existing JavaScript for filters and dialogs -->
+    <script>
+        // ADMIN LOGIN REDIRECT
+        if (window.netlifyIdentity) {
+            window.netlifyIdentity.on("init", user => {
+                if (!user) window.netlifyIdentity.on("login", () => document.location.href = "/admin/");
+            });
+        }
+
+        // FILTER LOGIC
+        const filterPills = document.querySelectorAll('.filter-pill');
+        const bookCards = document.querySelectorAll('.book-card');
+        filterPills.forEach(pill => {
+            pill.addEventListener('click', function() {
+                const category = this.getAttribute('data-category');
+                filterPills.forEach(p => p.classList.remove('active'));
+                this.classList.add('active');
+                
+                bookCards.forEach(card => {
+                    if (category === 'all' || card.getAttribute('data-category') === category) {
+                        card.classList.remove('hidden');
+                    } else {
+                        card.classList.add('hidden');
+                    }
+                });
+            });
+        });
+
+        // MATERIAL DIALOG (Bottom Sheet) LOGIC
+        const dialog = document.getElementById('bookDialog');
+        const closeBtn = document.getElementById('closeDialog');
+        
+        bookCards.forEach(card => {
+            card.addEventListener('click', function() {
+                document.getElementById('d-title').textContent = this.getAttribute('data-title');
+                document.getElementById('d-desc').textContent = this.getAttribute('data-desc');
+                
+                document.getElementById('d-sample').href = this.getAttribute('data-sample');
+                document.getElementById('d-amazon').href = this.getAttribute('data-amazon');
+                
+                const gumroadLink = this.getAttribute('data-gumroad');
+                const gumroadBtn = document.getElementById('d-gumroad');
+                if(gumroadLink && gumroadLink !== "null" && gumroadLink !== "") {
+                    gumroadBtn.style.display = "block";
+                    gumroadBtn.href = gumroadLink;
+                } else {
+                    gumroadBtn.style.display = "none";
+                }
+
+                dialog.classList.add('active');
+            });
+        });
+
+        closeBtn.addEventListener('click', () => dialog.classList.remove('active'));
+        dialog.addEventListener('click', (e) => {
+            if (e.target === dialog) dialog.classList.remove('active');
+        });
+    </script>
 </body>
 </html>
