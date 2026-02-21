@@ -3,40 +3,55 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="COLORYNTH - Redefining Colors and Design" />
-    <meta name="keywords" content="COLORYNTH, design, colors, web design, CMS integration" />
-    <title>COLORYNTH - Home</title>
+    <meta name="description" content="COLORYNTH - Your one-stop solution for vibrant colors and designs.">
+    <title>COLORYNTH</title>
     <style>
         body {
-            background-color: #333333; /* Dark Ash */
+            background-color: #1C1C1C; /* Dark Ash */
             color: #FFFFFF; /* White */
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
         }
-        header, footer {
+        header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px;
+            background-color: #333;
+        }
+        img.logo {
+            max-width: 150px;
+        }
+        .hero {
+            background-image: url('./images/hero-banner.jpg'); /* Local image path */
+            height: 400px;
+            background-size: cover;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
             text-align: center;
-            padding: 20px;
         }
-        /* Other styles */
+        .carousel, .reviews {
+            margin: 20px;
+        }
     </style>
 </head>
 <body>
     <header>
-        <h1>Welcome to COLORYNTH</h1>
+        <img src="./images/logo.png" alt="COLORYNTH Logo" class="logo"> <!-- Logo Image Tag -->
     </header>
-    <main>
-        <section id="content">
-            <p>Your content here will be dynamically loaded for CMS integration!</p>
-            <!--<div class="book-card">
-                <h3>Book Title</h3>
-                <p>Book Review</p>
-            </div>-->
-        </section>
-    </main>
+    <section class="hero">
+        <h1>Welcome to COLORYNTH</h1>
+    </section>
+    <div class="carousel">
+        <!-- Empty carousel container for CMS -->
+    </div>
+    <div class="reviews">
+        <!-- Empty reviews grid for CMS -->
+    </div>
     <footer>
-        <p>&copy; 2026 COLORYNTH. All rights reserved.</p>
+        <a href="https://drive.google.com/link-to-your-lead-magnet" target="_blank">Download your free resource!</a> <!-- Google Drive lead magnet link -->
     </footer>
-    <script src="local/path/to/your/script.js"></script>
+
+    <script src="scripts/main.js"></script> <!-- Existing JavaScript for filters and dialogs -->
 </body>
 </html>
