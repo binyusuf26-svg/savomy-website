@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SAVOMY - Children's Coloring Books | Color Your World</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+    
+    <style>
+        /* --- MATERIAL DESIGN 3 VARIABLES --- */
+        :root {
+            --primary: #6200ea; --primary-light: #7c3aed; --primary-dark: #5a189a;
+            --secondary: #f06292; --secondary-dark: #ec407a;
+            --accent: #00bcd4;
+            --surface: #ffffff; --surface-variant: #f5f5f5; --background: #fafafa;
+            --text-primary: #212121; --text-secondary: #666666;
+            --elevation-1: 0 2px 4px rgba(0,0,0,0.1);
+            --elevation-2: 0 4px 8px rgba(0,0,0,0.12);
+            --elevation-3: 0 8px 16px rgba(0,0,0,0.15);
+            --radius-card: 16px; --radius-dialog: 24px;
+            --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body { font-family: 'Nunito', sans-serif; background: var(--background); color: var(--text-primary); }
+        img { max-width: 100%; display: block; }
+
+        /* --- HEADER --- */
+        header {
+            position: sticky; top: 0; z-index: 100;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 16px 24px; display: flex; justify-content: space-between; align-items: center;
+            box-shadow: var(--elevation-1); backdrop-filter: blur(8px);
+        }
+        .header-brand h1 { font-size: 24px; font-weight: 900; color: var(--primary); letter-spacing: 1px; }
+
+        /* --- BIG BOOK HERO BANNER --- */
+        .hero-banner {
+            position: relative;
+            /* Placeholder background image - swap with a wide picture of your books later! */
+            background: url('https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?auto=format&fit=crop&w=1600&q=80') center/cover no-repeat;
+            min-height: 450px;
+            display: flex; align-items: center; justify-content: center; text-align: center;
+        }
+        .hero-overlay {
+            position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+            background: linear-gradient(135deg, rgba(98, 0, 234, 0.85) 0%, rgba(240, 98, 146, 0.85) 100%);
+        }
+        .hero-content {
+            position: relative; z-index: 1; color: white; padding: 24px; max-width: 800px;
+        }
+        .hero-content h2 { font-size: clamp(36px, 8vw, 54px); font-weight: 900; margin-bottom: 16px; line-height: 1.1; }
+        .hero-content p { font-size: clamp(18px, 4vw, 22px); opacity: 0.95; font-weight: 600; }
+
+        /* --- FILTERS (5 Categories) --- */
+        .library-section { padding: 60px 24px; max-width: 1200px; margin: 0 auto; }
+        .library-title { font-size: 28px; font-weight: 800; margin-bottom: 24px; text-align: center; }
+        .filter-container {
+            display: flex; gap: 12px; overflow-x: auto; margin-bottom: 24px;
+            padding: 8px 0; scroll-snap-type: x mandatory; scrollbar-width: none;
+        }
+        .filter-container::-webkit-scrollbar { display: none; }
+        .filter-pill {
+            padding: 10px 24px; border: 2px solid #e0e0e0; background: var(--surface);
+            border-radius: 50px; cursor: pointer; font-size: 15px; font-weight: 700;
+            white-space: nowrap; scroll-snap-align: start; transition: var(--transition); color: var(--text-secondary);
+        }
+        .filter-pill.active { background: var(--primary); color: white; border-color: var(--primary); box-shadow: var(--elevation-2); }
+
+        /* --- GOOGLE PLAY STYLE CAROUSEL --- */
+        .carousel-container {
+            display: flex; gap: 20px; overflow-x: auto; scroll-snap-type: x mandatory;
+            padding: 10px 24px; margin: 0 -24px; -webkit-overflow-scrolling: touch;
+        }
+        .carousel-container::-webkit-scrollbar { height: 6px; }
+        .carousel-container::-webkit-scrollbar-thumb { background: #ccc; border-radius: 10px; }
+
+        .book-card { flex: 0 0 auto; width: 220px; scroll-snap-align: center; cursor: pointer; }
+        .book-cover-wrapper {
+            background: var(--surface); border-radius: var(--radius-card); padding: 8px;
+            box-shadow: var(--elevation-1); transition: var(--transition); position: relative;
+        }
+        .book-cover-wrapper:hover { transform: translateY(-5px); box-shadow: var(--elevation-3); }
+        .book-cover-wrapper img { width: 100%; border-radius: 12px; object-fit: cover; aspect-ratio: 3/4; }
+        
+        .book-card-title { font-size: 16px; font-weight: 800; margin-top: 12px; text-align: center; color: var(--text-primary); }
+        .category-badge {
+            position: absolute; top: 16px; right: 16px; background: var(--secondary);
+            color: white; padding: 4px 10px; border-radius: 12px; font-size: 11px; font-weight: 800; text-transform: uppercase;
+        }
+
+        /* --- MATERIAL DIALOG (Bottom Sheet Popup) --- */
+        .dialog-overlay {
+            display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0, 0, 0, 0.6); z-index: 1000; justify-content: center; align-items: flex-end;
+            backdrop-filter: blur(4px);
+        }
+        .dialog-overlay.active { display: flex; animation: fadeIn 0.3s forwards; }
+        
+        .dialog-content {
+            background: var(--surface); width: 100%; max-width: 500px;
+            border-radius: var(--radius-dialog) var(--radius-dialog) 0 0;
+            padding: 32px 24px; box-shadow: var(--elevation-3);
+            transform: translateY(100%); transition: transform 0.3s ease-out;
+        }
+        .dialog-overlay.active .dialog-content { transform: translateY(0); }
+
+        .dialog-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 16px; }
+        .dialog-title { font-size: 24px; font-weight: 800; line-height: 1.2; }
+        .dialog-close { background: var(--surface-variant); border: none; width: 36px; height: 36px; border-radius: 50%; cursor: pointer; font-size: 18px; font-weight: bold; color: var(--text-secondary); }
+        
+        .dialog-desc { font-size: 15px; color: var(--text-secondary); margin-bottom: 24px; line-height: 1.5; }
+        
+        .dialog-actions { display: flex; flex-direction: column; gap: 12px; }
+        .btn {
+            width: 100%; padding: 14px; border-radius: 12px; font-size: 15px; font-weight: 800;
+            text-align: center; text-decoration: none; display: block; transition: var(--transition); border: none; cursor: pointer;
+        }
+        .btn-sample { border: 2px solid var(--primary); color: var(--primary); background: transparent; }
+        .btn-amazon { background: var(--primary); color: white; }
+        .btn-gumroad { background: var(--secondary); color: white; }
+        .btn:hover { transform: translateY(-2px); box-shadow: var(--elevation-2); }
+
+        /* --- NEW: CUSTOMER REVIEWS SECTION --- */
+        .reviews-section { background: var(--surface-variant); padding: 80px 24px; }
+        .reviews-grid { display: flex; gap: 24px; overflow-x: auto; scroll-snap-type: x mandatory; padding: 10px 0; -webkit-overflow-scrolling: touch; }
+        .reviews-grid::-webkit-scrollbar { display: none; }
+        
+        .review-card {
+            flex: 0 0 auto; width: 300px; background: var(--surface); border-radius: var(--radius-card);
+            padding: 24px; box-shadow: var(--elevation-1); scroll-snap-align: center;
+            display: flex; flex-direction: column; align-items: center; text-align: center;
+        }
+        .review-img { width: 80px; height: 80px; border-radius: 50%; object-fit: cover; margin-bottom: 16px; border: 3px solid var(--primary-light); }
+        .review-stars { color: #FFD700; font-size: 22px; margin-bottom: 12px; letter-spacing: 2px; }
+        .review-text { font-size: 14px; font-style: italic; color: var(--text-secondary); margin-bottom: 16px; line-height: 1.6; }
+        .review-name { font-size: 16px; font-weight: 800; color: var(--text-primary); }
+
+        /* --- NETLIFY LEAD MAGNET FORM --- */
+        .lead-magnet { background: linear-gradient(135deg, var(--secondary) 0%, var(--secondary-dark) 100%); color: white; padding: 60px 24px; text-align: center; }
+        .lead-magnet-form { max-width: 500px; margin: 24px auto 0; display: flex; flex-direction: column; gap: 12px; }
+        .lead-magnet-form input { padding: 16px; border-radius: 12px; border: none; font-size: 16px; outline: none; }
+        .btn-magnet { background: var(--primary); color: white; padding: 16px; border-radius: 12px; font-weight: 800; font-size: 16px; border: none; cursor: pointer; }
+
+        /* --- FOOTER & CONTACT INFO --- */
+        footer { background: var(--text-primary); color: white; padding: 40px 24px; text-align: center; }
+        .contact-info { margin-bottom: 24px; padding-bottom: 24px; border-bottom: 1px solid rgba(255,255,255,0.1); }
+        .contact-info p { font-size: 16px; margin-bottom: 8px; color: #e0e0e0; }
+        .contact-info a { color: var(--accent-light); text-decoration: none; font-weight: 700; }
+        footer p { font-size: 14px; color: #999; }
+
+        @media (min-width: 600px) {
+            .lead-magnet-form { flex-direction: row; }
+            .dialog-overlay { align-items: center; }
+            .dialog-content { border-radius: var(--radius-dialog); }
+            .reviews-grid { justify-content: center; flex-wrap: wrap; overflow-x: visible; }
+        }
+        .hidden { display: none !important; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="header-brand"><h1>🎨 SAVOMY</h1></div>
+    </header>
+
+    <section class="hero-banner">
+        <div class="hero-overlay"></div>
+        <div class="hero-content">
+            <h2>Color Your World!</h2>
+            <p>Bold, adorable, and easy-to-color books designed to build confidence in little artists.</p>
+        </div>
+    </section>
+
+    <section class="library-section">
+        <h2 class="library-title">Explore Our Collection</h2>
+
+        <div class="filter-container">
+            <button class="filter-pill active" data-category="all">All</button>
+            <button class="filter-pill" data-category="animals">🦁 Animals</button>
+            <button class="filter-pill" data-category="food">🍕 Food</button>
+            <button class="filter-pill" data-category="space">🚀 Space</button>
+            <button class="filter-pill" data-category="vehicles">🚗 Vehicles</button>
+            <button class="filter-pill" data-category="monsters">👹 Monsters</button>
+        </div>
+
+        <div class="carousel-container">
+            <article class="book-card" data-category="animals" 
+                     data-title="Big Book of Cute Animals" 
+                     data-desc="40 pages of thick-line jungle friends, pets, and more! Perfect for toddlers to learn and color."
+                     data-sample="https://amazon.com" 
+                     data-amazon="https://amazon.com" 
+                     data-gumroad="https://gumroad.com">
+                <div class="book-cover-wrapper">
+                    <span class="category-badge">Animals</span>
+                    <img src="https://images.unsplash.com/photo-1589829085413-56de8ae18c73?auto=format&fit=crop&q=80&w=400" alt="Animals Cover">
+                </div>
+                <h3 class="book-card-title">Cute Animals</h3>
+            </article>
+
+            <article class="book-card" data-category="space" 
+                     data-title="Cosmic Space Adventure" 
+                     data-desc="Blast off with cute astronauts, planets, and friendly aliens in this out-of-this-world coloring book!"
+                     data-sample="https://amazon.com" 
+                     data-amazon="https://amazon.com" 
+                     data-gumroad="https://gumroad.com">
+                <div class="book-cover-wrapper">
+                    <span class="category-badge">Space</span>
+                    <img src="https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&q=80&w=400" alt="Space Cover">
+                </div>
+                <h3 class="book-card-title">Space Adventure</h3>
+            </article>
+        </div>
+    </section>
+
+    <section class="reviews-section">
+        <h2 class="library-title">What Parents Are Saying</h2>
+        <div class="reviews-grid">
+            <div class="review-card">
+                <img src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?auto=format&fit=crop&w=150&q=80" alt="Sarah" class="review-img">
+                <div class="review-stars">★★★★★</div>
+                <p class="review-text">"My daughter spent hours coloring these pages! The designs are just the right difficulty level and the thick lines are perfect."</p>
+                <p class="review-name">Sarah M.</p>
+            </div>
+            <div class="review-card">
+                <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=150&q=80" alt="James" class="review-img">
+                <div class="review-stars">★★★★★</div>
+                <p class="review-text">"Beautiful illustrations and great quality. My kids fought over which book to color first. SAVOMY is a hit in our house!"</p>
+                <p class="review-name">James T.</p>
+            </div>
+            <div class="review-card">
+                <img src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=150&q=80" alt="Emily" class="review-img">
+                <div class="review-stars">★★★★★</div>
+                <p class="review-text">"Great way to keep them entertained and developing creativity. The digital PDF option is a lifesaver for printing at home."</p>
+                <p class="review-name">Emily R.</p>
+            </div>
+        </div>
+    </section>
+
+    <div class="dialog-overlay" id="bookDialog">
+        <div class="dialog-content">
+            <div class="dialog-header">
+                <h3 class="dialog-title" id="d-title">Book Title</h3>
+                <button class="dialog-close" id="closeDialog">✕</button>
+            </div>
+            <p class="dialog-desc" id="d-desc">Book Description goes here...</p>
+            
+            <div class="dialog-actions">
+                <a href="#" target="_blank" id="d-sample" class="btn btn-sample">📖 Read Sample on Amazon</a>
+                <a href="#" target="_blank" id="d-amazon" class="btn btn-amazon">🛒 Buy Physical on Amazon</a>
+                <a href="#" target="_blank" id="d-gumroad" class="btn btn-gumroad">📥 Buy Digital PDF</a>
+            </div>
+        </div>
+    </div>
+
+    <section class="lead-magnet">
+        <h2>Get 5 FREE Coloring Pages!</h2>
+        <p>Enter your email below. We will instantly redirect you to your free Google Drive download!</p>
+        
+        <form class="lead-magnet-form" name="FreebieDownloads" method="POST" data-netlify="true" action="PUT_YOUR_GOOGLE_DRIVE_LINK_HERE">
+            <input type="email" name="email" placeholder="Enter your email address" required>
+            <button type="submit" class="btn-magnet">Download Now →</button>
+        </form>
+    </section>
+
+    <footer>
+        <div class="contact-info">
+            <p><strong>Got questions? Reach out to us!</strong></p>
+            <p>Email: <a href="mailto:zalhamist@gmail.com">zalhamist@gmail.com</a></p>
+            <p>Phone / WhatsApp: <a href="tel:+2349065605826">+2349065605826</a></p>
+        </div>
+        <p>&copy; 2026 SAVOMY Coloring Books. All rights reserved.</p>
+    </footer>
+
+    <script>
+        // ADMIN LOGIN REDIRECT
+        if (window.netlifyIdentity) {
+            window.netlifyIdentity.on("init", user => {
+                if (!user) window.netlifyIdentity.on("login", () => document.location.href = "/admin/");
+            });
+        }
+
+        // FILTER LOGIC
+        const filterPills = document.querySelectorAll('.filter-pill');
+        const bookCards = document.querySelectorAll('.book-card');
+        filterPills.forEach(pill => {
+            pill.addEventListener('click', function() {
+                const category = this.getAttribute('data-category');
+                filterPills.forEach(p => p.classList.remove('active'));
+                this.classList.add('active');
+                
+                bookCards.forEach(card => {
+                    if (category === 'all' || card.getAttribute('data-category') === category) {
+                        card.classList.remove('hidden');
+                    } else {
+                        card.classList.add('hidden');
+                    }
+                });
+            });
+        });
+
+        // MATERIAL DIALOG (Bottom Sheet) LOGIC
+        const dialog = document.getElementById('bookDialog');
+        const closeBtn = document.getElementById('closeDialog');
+        
+        bookCards.forEach(card => {
+            card.addEventListener('click', function() {
+                document.getElementById('d-title').textContent = this.getAttribute('data-title');
+                document.getElementById('d-desc').textContent = this.getAttribute('data-desc');
+                
+                document.getElementById('d-sample').href = this.getAttribute('data-sample');
+                document.getElementById('d-amazon').href = this.getAttribute('data-amazon');
+                
+                const gumroadLink = this.getAttribute('data-gumroad');
+                const gumroadBtn = document.getElementById('d-gumroad');
+                if(gumroadLink && gumroadLink !== "null" && gumroadLink !== "") {
+                    gumroadBtn.style.display = "block";
+                    gumroadBtn.href = gumroadLink;
+                } else {
+                    gumroadBtn.style.display = "none";
+                }
+
+                dialog.classList.add('active');
+            });
+        });
+
+        closeBtn.addEventListener('click', () => dialog.classList.remove('active'));
+        dialog.addEventListener('click', (e) => {
+            if (e.target === dialog) dialog.classList.remove('active');
+        });
+    </script>
+</body>
+</html>
