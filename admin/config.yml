@@ -3,30 +3,37 @@ backend:
   branch: main
 
 media_folder: "images"
-public_folder: "/images"
+public_folder: "images"
 
 collections:
-  - name: "books"
-    label: "Coloring Books"
-    folder: "_books"
-    create: true
-    slug: "{{slug}}"
-    fields:
-      - {label: "Book Title", name: "title", widget: "string"}
-      - {label: "Short Description", name: "description", widget: "text"}
-      - {label: "Cover Image", name: "cover", widget: "image"}
-      - {label: "Category", name: "category", widget: "select", options: ["Animals", "Food", "Space", "Vehicles", "Monsters"]}
-      - {label: "Amazon Buy Link", name: "amazon_url", widget: "string"}
-      - {label: "Amazon Sample Link", name: "sample_url", widget: "string"}
-      - {label: "Gumroad Link (Optional)", name: "gumroad_url", widget: "string", required: false}
+  - name: "database"
+    label: "Site Content"
+    files:
+      - label: "Coloring Books Catalog"
+        name: "books"
+        file: "books.json"
+        fields:
+          - label: "Books List"
+            name: "books_list"
+            widget: "list"
+            fields:
+              - {label: "Book Title", name: "title", widget: "string"}
+              - {label: "Short Description", name: "description", widget: "text"}
+              - {label: "Cover Image", name: "cover", widget: "image"}
+              - {label: "Category", name: "category", widget: "select", options: ["Animals", "Food", "Space", "Vehicles", "Monsters"]}
+              - {label: "Amazon Buy Link", name: "amazon_url", widget: "string"}
+              - {label: "Amazon Sample Link", name: "sample_url", widget: "string"}
+              - {label: "Gumroad Link (Optional)", name: "gumroad_url", widget: "string", required: false}
 
-  - name: "reviews"
-    label: "Customer Reviews"
-    folder: "_reviews"
-    create: true
-    slug: "{{slug}}"
-    fields:
-      - {label: "Reviewer Name", name: "name", widget: "string"}
-      - {label: "Customer Photo", name: "image", widget: "image"}
-      - {label: "Star Rating (1 to 5)", name: "stars", widget: "number", value_type: "int", min: 1, max: 5}
-      - {label: "Review Text", name: "text", widget: "text"}
+      - label: "Customer Reviews"
+        name: "reviews"
+        file: "reviews.json"
+        fields:
+          - label: "Reviews List"
+            name: "reviews_list"
+            widget: "list"
+            fields:
+              - {label: "Reviewer Name", name: "name", widget: "string"}
+              - {label: "Customer Photo", name: "image", widget: "image"}
+              - {label: "Star Rating (1 to 5)", name: "stars", widget: "number", value_type: "int", min: 1, max: 5}
+              - {label: "Review Text", name: "text", widget: "text"}
